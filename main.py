@@ -79,11 +79,20 @@ banner = """
                          |___/                                                                  
 
 """
-user_data = requests.get("https://discord.com/api/v9/users/@me", headers={"Authorization": token}).json()
-globalname = user_data["global_name"]
+user_data = requests.get(
+    "https://discord.com/api/v9/users/@me",
+    headers={"Authorization": token}
+).json()
+
+globalname = (
+    user_data.get("global_name")
+    or user_data.get("display_name")
+    or user_data.get("username")
+)
+
 if not globalname:
-    print(f"{Fore.RED}[Error] Incorrect Token Provided{Fore.RESET}")
-    os.system('exit')
+    print(f"{Fore.RED}[Error] Invalid Token / Failed to fetch user data{Fore.RESET}")
+    os._exit(1)
 
 all_tasks = []
 all_tasks_stop = []
